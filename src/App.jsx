@@ -1,11 +1,17 @@
 import Header from "./components/Header";
 import EventoCard from "./components/EventoCard";
-import { eventos } from "./data/eventos";
-import { useState } from "react"
+import { useEffect, useState } from "react"
+import axios from "axios"
 import "./App.css";
 function App() {
   const [busca, setBusca] = useState("")
- return (
+  const [eventos, setEventos] = useState([])
+const [carregando, setCarregando] = useState(true)
+const [erro, setErro] = useState(false)
+  const eventosFiltrados = eventos.filter((evento) =>
+ evento.titulo.toLowerCase().includes(busca.toLowerCase())
+);
+  return (
  <>
  <Header />
  <section className="busca">
@@ -17,10 +23,19 @@ function App() {
  />
 </section>
 
-<p>Você digitou: {busca}</p>
+{busca !== '' && (
+ <p className="contador">
+ {eventosFiltrados.length} evento(s) encontrado(s)
+ </p>
+)}
 
+{eventosFiltrados.length === 0 ? (
+ <p className="lista-vazia">
+ Nenhum evento encontrado para "{busca}".
+ </p>
+) : (
  <main className="lista-eventos">
- {eventos.map((evento) => (
+ {eventosFiltrados.map((evento) => (
  <EventoCard
  key={evento.id}
  titulo={evento.titulo}
@@ -31,7 +46,8 @@ function App() {
  />
  ))}
  </main>
- </>
- );
+)}
+</>
+ )
 }
 export default App;
